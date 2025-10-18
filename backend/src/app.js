@@ -7,6 +7,7 @@ const express = require('express');
 const cors = require('cors');
 const routes = require('./routes');
 const errorHandler = require('./middleware/errorHandler');
+const { apiLimiter } = require('./middleware/rateLimiter');
 
 // Initialize Express app
 const app = express();
@@ -15,7 +16,7 @@ const app = express();
  * Middleware Configuration
  */
 
-// Enable CORS with configuration
+// Enable CORS
 const corsOptions = {
   origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
   credentials: true,
@@ -24,11 +25,11 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // Body parser middleware
-// Parse JSON request bodies
 app.use(express.json({ limit: '10mb' }));
-
-// Parse URL-encoded request bodies
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Apply rate limiting to all API routes
+app.use('/api', apiLimiter);
 
 // Request logging middleware (development only)
 if (process.env.NODE_ENV === 'development') {
@@ -51,18 +52,18 @@ app.get('/', (req, res) => {
     version: '1.0.0',
     endpoints: {
       health: '/api/health',
+      auth: '/api/auth',
       documentation: '/api/docs'
     }
   });
 });
 
 /**
- * Error Handling Middleware
- * Must be defined after all routes
+ * Error Handling
  */
 app.use(errorHandler);
 
-// Handle 404 - Route not found
+// Handle 404
 app.use((req, res) => {
   res.status(404).json({
     success: false,

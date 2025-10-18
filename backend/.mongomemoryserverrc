@@ -1,0 +1,10 @@
+{
+  "binary": {
+    "version": "7.0.14",
+    "downloadDir": "./mongodb-binaries",
+    "systemBinary": ""
+  },
+  "instance": {
+    "storageEngine": "wiredTiger"
+  }
+}

@@ -39,7 +39,7 @@ exports.databaseHealth = async (req, res) => {
     // If connected, perform a simple database operation
     if (dbState === 1) {
       await mongoose.connection.db.admin().ping();
-
+      
       res.status(200).json({
         success: true,
         message: 'Database connection is healthy',
