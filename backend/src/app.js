@@ -8,9 +8,13 @@ const cors = require('cors');
 const routes = require('./routes');
 const errorHandler = require('./middleware/errorHandler');
 const { apiLimiter } = require('./middleware/rateLimiter');
+const { startScheduledJobs } = require('./jobs/scheduledJobs');
 
 // Initialize Express app
 const app = express();
+
+// Start scheduled jobs (cron tasks)
+startScheduledJobs();
 
 /**
  * Middleware Configuration
